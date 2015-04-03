@@ -417,7 +417,7 @@ value returned by function `user-mail-address'."
 
 (defvar rpm-tags-regexp
   (concat "\\(\\<" (regexp-opt (mapcar 'car rpm-tags-list))
-	  "\\|\\(Patch\\|Source\\)[0-9]+\\>\\)")
+          "\\|\\(Patch\\|Source\\)[0-9]+\\>\\)")
   "Regular expression for matching valid tags.")
 
 (defvar rpm-obsolete-tags-list
@@ -675,8 +675,8 @@ with no args, if that value is non-nil."
 
   (if (not (executable-find "rpmbuild"))
       (progn
-	(setq rpm-spec-build-command "rpm")
-	(setq rpm-spec-nobuild-option "--test")))
+        (setq rpm-spec-build-command "rpm")
+        (setq rpm-spec-nobuild-option "--test")))
   
   (make-local-variable 'paragraph-start)
   (setq paragraph-start (concat "$\\|" page-delimiter))
@@ -762,7 +762,7 @@ If `rpm-change-log-uses-utc' is nil, \"today\" means the local time zone."
   ;; ^Patch
   (re-search-backward "^Patch\\([0-9]+\\):\\([ \t]*\\)" nil nil)
   (let ((new-patch (rpm-increase-patch-number (match-string 1)))
-	(patch-name (file-name-nondirectory patch-file)))
+        (patch-name (file-name-nondirectory patch-file)))
     (end-of-line)
     (newline)
     (insert "Patch" new-patch ":" (match-string 2) patch-name)
@@ -770,11 +770,11 @@ If `rpm-change-log-uses-utc' is nil, \"today\" means the local time zone."
     (let ((p (point)))
       (end-of-buffer)
       (if (re-search-backward "^%patch[0-9]+" nil t)
-	  (progn
-	    (end-of-line)
-	    (newline)
-	    (insert "%patch" new-patch " -p1 -b ." (rpm-get-patch-backup-name patch-name)))
-	(goto-char p)))))
+          (progn
+            (end-of-line)
+            (newline)
+            (insert "%patch" new-patch " -p1 -b ." (rpm-get-patch-backup-name patch-name)))
+        (goto-char p)))))
 ;;------------------------------------------------------------
 
 (defun rpm-insert-f (&optional filetype filename)
@@ -1081,34 +1081,34 @@ leave point at previous location."
 
   (if rpm-spec-auto-topdir
       (if (string-match ".*/SPECS/$" default-directory)
-	  (let ((topdir (expand-file-name default-directory)))
-	    (setq buildoptions
-		  (cons
-		   (concat "--define \"_topdir " 
-			   (replace-regexp-in-string "/SPECS/$" "" topdir)
-			   "\"")
-		   buildoptions)))))
+          (let ((topdir (expand-file-name default-directory)))
+            (setq buildoptions
+                  (cons
+                   (concat "--define \"_topdir " 
+                           (replace-regexp-in-string "/SPECS/$" "" topdir)
+                           "\"")
+                   buildoptions)))))
 
   (progn
     (defun list->string (lst)
       (if (cdr lst)
-	  (concat (car lst) " " (list->string (cdr lst)))
-	(car lst)))
+          (concat (car lst) " " (list->string (cdr lst)))
+        (car lst)))
     (compilation-start (list->string (cons rpm-spec-build-command buildoptions)) 'rpmbuild-mode))
   
   (if (and rpm-spec-sign-gpg (not rpm-no-gpg))
       (let ((build-proc (get-buffer-process
-			 (get-buffer
-			  (compilation-buffer-name "rpmbuild" nil nil))))
-	    (rpm-passwd-cache (read-passwd "GPG passphrase: ")))
-	(process-send-string build-proc (concat rpm-passwd-cache "\n")))))
+                         (get-buffer
+                          (compilation-buffer-name "rpmbuild" nil nil))))
+            (rpm-passwd-cache (read-passwd "GPG passphrase: ")))
+        (process-send-string build-proc (concat rpm-passwd-cache "\n")))))
 
 (defun rpm-build-prepare (&optional arg)
   "Run a `rpmbuild -bp'."
   (interactive "p")
   (if rpm-spec-short-circuit
       (message "Cannot run `%s -bp' with --short-circuit"
-	       rpm-spec-build-command)
+               rpm-spec-build-command)
     (setq rpm-no-gpg t)
     (rpm-build "-bp")))
 
@@ -1117,7 +1117,7 @@ leave point at previous location."
   (interactive "p")
   (if rpm-spec-short-circuit
       (message "Cannot run `%s -bl' with --short-circuit"
-	       rpm-spec-build-command)
+               rpm-spec-build-command)
     (setq rpm-no-gpg t)
     (rpm-build "-bl")))
 
@@ -1138,7 +1138,7 @@ leave point at previous location."
   (interactive "p")
   (if rpm-spec-short-circuit
       (message "Cannot run `%s -bb' with --short-circuit"
-	       rpm-spec-build-command)
+               rpm-spec-build-command)
     (setq rpm-no-gpg nil)
     (rpm-build "-bb")))
 
@@ -1147,7 +1147,7 @@ leave point at previous location."
   (interactive "p")
   (if rpm-spec-short-circuit
       (message "Cannot run `%s -bs' with --short-circuit"
-	       rpm-spec-build-command)
+               rpm-spec-build-command)
     (setq rpm-no-gpg nil)
     (rpm-build "-bs")))
 
@@ -1156,7 +1156,7 @@ leave point at previous location."
   (interactive "p")
   (if rpm-spec-short-circuit
       (message "Cannot run `%s -ba' with --short-circuit"
-	       rpm-spec-build-command)
+               rpm-spec-build-command)
     (setq rpm-no-gpg nil)
     (rpm-build "-ba")))
 
@@ -1457,28 +1457,28 @@ The resulting %patch line will look like this:
       (setq name (match-string 1 file))))
 
     (if rpm-spec-indent-heading-values
-	(insert
-	 "Summary:        "
-	 "\nName:           " (or name "")
-	 "\nVersion:        " (or version "")
-	 "\nRelease:        " (or release "")
-	 (if rpm-spec-default-epoch
-	     (concat "\nEpoch:          "
-		     (int-to-string rpm-spec-default-epoch))
-	   "")
-	 "\nLicense:        "
-	 "\nGroup:          "
-	 "\nURL:            "
-	 "\nSource0:        %{name}-%{version}.tar.gz"
-	 "\nBuildRoot:      " rpm-spec-default-buildroot)
+        (insert
+         "Summary:        "
+         "\nName:           " (or name "")
+         "\nVersion:        " (or version "")
+         "\nRelease:        " (or release "")
+         (if rpm-spec-default-epoch
+             (concat "\nEpoch:          "
+                     (int-to-string rpm-spec-default-epoch))
+           "")
+         "\nLicense:        "
+         "\nGroup:          "
+         "\nURL:            "
+         "\nSource0:        %{name}-%{version}.tar.gz"
+         "\nBuildRoot:      " rpm-spec-default-buildroot)
       (insert
        "Summary: "
        "\nName: " (or name "")
        "\nVersion: " (or version "")
        "\nRelease: " (or release "")
        (if rpm-spec-default-epoch
-	   (concat "\nEpoch: " (int-to-string rpm-spec-default-epoch))
-	 "")
+           (concat "\nEpoch: " (int-to-string rpm-spec-default-epoch))
+         "")
        "\nLicense: "
        "\nGroup: "
        "\nURL: "
