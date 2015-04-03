@@ -756,6 +756,25 @@ If `rpm-change-log-uses-utc' is nil, \"today\" means the local time zone."
   (insert "- \n")
   (end-of-line '0))
 
+(defun rpm-spec-add-patch (patch-file)
+  (interactive "fPatch: ")
+  (end-of-buffer)
+  ;; ^Patch
+  (re-search-backward "^Patch\\([0-9]+\\):\\([ \t]*\\)" nil nil)
+  (let ((new-patch (rpm-increase-patch-number (match-string 1)))
+	(patch-name (file-name-nondirectory patch-file)))
+    (end-of-line)
+    (newline)
+    (insert "Patch" new-patch ":" (match-string 2) patch-name)
+    ;; ^%patch
+    (let ((p (point)))
+      (end-of-buffer)
+      (if (re-search-backward "^%patch[0-9]+" nil t)
+	  (progn
+	    (end-of-line)
+	    (newline)
+	    (insert "%patch" new-patch " -p1 -b ." (rpm-get-patch-backup-name patch-name)))
+	(goto-char p)))))
 ;;------------------------------------------------------------
 
 (defun rpm-insert-f (&optional filetype filename)
@@ -1361,6 +1380,62 @@ if one is present in the file."
         (let ((dinrel inrel))
           (replace-match (concat "%define " dinrel))
           (message "Release tag changed to %s." dinrel))))))
+
+(defun rpm-increase-patch-number (patch-number)
+  "Increase the PATCH-NUMBER by 1.
+
+PATCH-NUMBER is a string. The length of it is preserved.
+
+Examples:
+
+(increase-patch-number \"1\")
+=> \"2\"
+
+(increase-patch-number \"001\")
+=> \"002\"
+"
+  (let ((fmt (format "%%0%dd" (length patch-number))))
+    (format fmt (1+ (string-to-int patch-number)))))
+
+(defun rpm-get-patch-backup-name (patch-name)
+  "Turn PATCH-NAME into a name suitable for the -b argument to %patch.
+
+PATCH-NAME is first stripped of prefix string \"%{name}-\", if there is any.
+PATCH-NAME is second stripped of prefix string \"%{version}-\", if there is any.
+PATCH-NAME is then stripped of suffix string \".patch\", if there is any.
+
+The above is a standard naming convention when adding patches to an RPM spec file.
+
+Example:
+
+The 'iputils.spec' file contains the following:
+
+Name: iputils
+Version: 20121221
+...
+Patch001: iputils-20121221-fix-ugly-bug.patch
+...
+
+The resulting %patch line will look like this:
+
+%patch001 -p1 -b .fix-ugly-bug
+"
+  (let ((result patch-name))
+    ; strip "%{name}-" if any
+    (let* ((prefix (concat (rpm-spec-field-value "Name" (point-max)) "-"))
+           (prefixlen (length prefix)))
+      (when (string-match prefix patch-name)
+        (setq result (substring patch-name prefixlen))))
+    ; strip "%{version}-" if any
+    (let* ((prefix (concat (rpm-spec-field-value "Version" (point-max)) "-"))
+           (prefixlen (length prefix)))
+      (when (string-match prefix result)
+        (setq result (substring result prefixlen))))
+    ; strip the ".patch" suffix if any
+    (if (string-match "\\(.+\\)\\.patch$" result)
+        (match-string 1 result)
+      result)))
+
 
 ;;------------------------------------------------------------
 
