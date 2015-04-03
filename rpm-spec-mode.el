@@ -1,6 +1,7 @@
 ;;; rpm-spec-mode.el --- RPM spec file editing commands for Emacs/XEmacs
 
 ;; Copyright (C) 1997-2013 Stig Bjørlykke, <stig@bjorlykke.org>
+;;                    2015 Jan Synáček, <jan.synacek@gmail.com>
 
 ;; Author:   Stig Bjørlykke, <stig@bjorlykke.org>
 ;; Keywords: unix, languages
@@ -52,7 +53,7 @@
 ;; This mode is used for editing spec files used for building RPM packages.
 ;;
 ;; Most recent version is available from:
-;;  <https://github.com/bjorlykke/rpm-spec-mode>
+;;  <https://github.com/jsynacek/rpm-spec-mode>
 ;;
 ;; Put this in your .emacs file to enable autoloading of rpm-spec-mode,
 ;; and auto-recognition of ".spec" files:
