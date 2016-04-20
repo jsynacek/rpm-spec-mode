@@ -1,7 +1,7 @@
 ;;; rpm-spec-mode.el --- RPM spec file editing commands for Emacs/XEmacs
 
 ;; Copyright (C) 1997-2013 Stig Bjørlykke, <stig@bjorlykke.org>
-;;                    2015 Jan Synáček, <jan.synacek@gmail.com>
+;;               2015-2016 Jan Synáček, <jan.synacek@gmail.com>
 
 ;; Author:   Stig Bjørlykke, <stig@bjorlykke.org>
 ;; Keywords: unix, languages
@@ -399,11 +399,13 @@ value returned by function `user-mail-address'."
     ("Prefixes")
     ("PreReq")
     ("Provides")
+    ("Recommends")
     ("Release")
     ("Requires")
     ("RepoTag")
     ("Source")
     ("Suggests")
+    ("Supplements")
     ("Summary")
     ("SVNId")
     ("URL")
